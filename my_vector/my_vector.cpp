@@ -21,7 +21,7 @@ public:
 
     vector(std::size_t size, const T& value) :m_size(size),
         m_capacity(size),
-        m_data(new T[size])// homework
+        m_data(size == 0 ? nullptr : new T[size])// homework
     {
         for (std::size_t i = 0; i < size; i++)
         {
@@ -41,14 +41,16 @@ public:
 
     ~vector() // homework
     {
-        if (m_data!=nullptr)
-        {
-            delete[] m_data;
-        }
+        delete[] m_data;
     }
 
     vector& operator=(const vector& other) // homework
     {
+        if (other.m_data==nullptr)
+        {
+            return *this;
+        }
+
         if (m_data!=nullptr)
         {
             delete[] m_data;
@@ -63,6 +65,7 @@ public:
 
         m_size = other.m_size;
         m_capacity = other.m_capacity;
+        return *this;
     }
 
     T& operator[](std::size_t index) {
@@ -77,6 +80,10 @@ public:
 
     void clear() // homework
     {
+        /*if (m_data==nullptr)
+        {
+            return;
+        }*/
         m_size = m_capacity = 0;
         delete[] m_data;
     }
@@ -137,7 +144,7 @@ public:
             m_data = new_data;
             m_capacity = size;
         }
-        else
+        else if(size<m_capacity)
         {
             T* new_data = new T[size];
             for (std::size_t i = 0; i < size; i++)
@@ -147,9 +154,7 @@ public:
             delete[] m_data;
             m_data = new_data;
             m_capacity = size;
-            m_size = size;
         }
-
     }
 
     std::size_t size() const {
@@ -161,11 +166,15 @@ private:
     std::size_t m_size;
     T* m_data;
 };
+
+void foo(const int& a)
+{
+    std::cout << a;
+}
+
 int main()
 {
-    vector<int> a{ 0,1,2,3 };
-    for (std::size_t i = 0; i < a.size(); i++)
-    {
-        std::cout << a[i] << " ";
-    }
+    vector<int> a{ 0 };
+    vector<int> b=a;
+    b.reserve(100);
 }
