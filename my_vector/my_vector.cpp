@@ -46,25 +46,23 @@ public:
 
     vector& operator=(const vector& other) // homework
     {
-        if (other.m_data==nullptr)
-        {
-            return *this;
-        }
-
-        if (m_data!=nullptr)
-        {
-            delete[] m_data;
-        }
-        
-        m_data = new T[other.m_capacity];
-        
-        for (std::size_t i = 0; i < other.m_size; i++)
-        {
-            m_data[i] = other.m_data[i];
-        }
-
+        delete[] m_data;
         m_size = other.m_size;
         m_capacity = other.m_capacity;
+
+        if (other.m_data==nullptr)
+        {
+            m_data = nullptr;
+        }
+        else
+        {
+            m_data = new T[other.m_capacity];
+            for (std::size_t i = 0; i < other.m_size; i++)
+            {
+                m_data[i] = other.m_data[i];
+            }
+        }
+
         return *this;
     }
 
@@ -80,12 +78,9 @@ public:
 
     void clear() // homework
     {
-        /*if (m_data==nullptr)
-        {
-            return;
-        }*/
         m_size = m_capacity = 0;
         delete[] m_data;
+        m_data = nullptr;
     }
 
     void push_back(const T& value) {
@@ -106,10 +101,7 @@ public:
 
     void pop_back() // homework
     {
-        if (m_size==0)
-        {
-            return;
-        }
+        assert(m_size == 0);
         m_size--;
     }
 
@@ -130,9 +122,9 @@ public:
         m_size = size;
     }
 
-    void reserve(std::size_t size) // homework перепроверить
+    void reserve(std::size_t size) // homework
     {
-        if (size>m_capacity)
+        if (size > m_capacity)
         {
             T* new_data = new T[size];
             for (std::size_t i = 0; i < m_size; i++)
@@ -144,13 +136,26 @@ public:
             m_data = new_data;
             m_capacity = size;
         }
-        else if(size<m_capacity)
+        else if (size < m_capacity)
         {
             T* new_data = new T[size];
-            for (std::size_t i = 0; i < size; i++)
+
+            if (m_size > size)
             {
-                new_data[i] = m_data[i];
+                for (std::size_t i = 0; i < size; i++)
+                {
+                    new_data[i] = m_data[i];
+                }
+                m_size = size;
             }
+            else
+            {
+                for (std::size_t i = 0; i < m_size; i++)
+                {
+                    new_data[i] = m_data[i];
+                }
+            }
+            
             delete[] m_data;
             m_data = new_data;
             m_capacity = size;
@@ -167,14 +172,10 @@ private:
     T* m_data;
 };
 
-void foo(const int& a)
-{
-    std::cout << a;
-}
 
 int main()
 {
-    vector<int> a{ 0 };
-    vector<int> b=a;
-    b.reserve(100);
+    vector<int> a;
+    vector<int> b;
+    b = a;
 }
