@@ -10,8 +10,8 @@ public:
         m_size(0),
         m_data(nullptr) {}
 
-    vector(const vector& other) : m_size(other.m_size),
-        m_capacity(other.m_capacity),
+    vector(const vector& other) : m_capacity(other.m_capacity),
+        m_size(other.m_size),
         m_data(m_capacity == 0 ? nullptr : new T[other.m_capacity])
     {
         for (std::size_t i = 0; i < m_size; ++i) {
@@ -19,8 +19,8 @@ public:
         }
     }
 
-    vector(std::size_t size, const T& value) :m_size(size),
-        m_capacity(size),
+    vector(std::size_t size, const T& value) : m_capacity(size),
+        m_size(size),
         m_data(size == 0 ? nullptr : new T[size])// homework
     {
         for (std::size_t i = 0; i < size; i++)
@@ -28,8 +28,8 @@ public:
             m_data[i] = value;
         }
     }
-        vector(std::initializer_list<T> list): m_size(list.size()),
-        m_capacity(list.size()),
+        vector(std::initializer_list<T> list): m_capacity(list.size()),
+        m_size(list.size()),
         m_data(list.size()== 0 ? nullptr : new T[list.size()])// homework
     {
             auto it = list.begin();
