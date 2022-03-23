@@ -124,22 +124,26 @@ public:
 
     void reserve(std::size_t size) // homework
     {
+        if (size==0)
+        {
+            delete[]m_data;
+            m_size = 0;
+            m_capacity = 0;
+            m_data = nullptr;
+            return;
+        }
+
+        T* new_data = new T[size];
+
         if (size > m_capacity)
         {
-            T* new_data = new T[size];
             for (std::size_t i = 0; i < m_size; i++)
             {
                 new_data[i] = m_data[i];
             }
-
-            delete[] m_data;
-            m_data = new_data;
-            m_capacity = size;
         }
         else if (size < m_capacity)
         {
-            T* new_data = new T[size];
-
             if (m_size > size)
             {
                 for (std::size_t i = 0; i < size; i++)
@@ -155,11 +159,10 @@ public:
                     new_data[i] = m_data[i];
                 }
             }
-            
-            delete[] m_data;
-            m_data = new_data;
-            m_capacity = size;
         }
+        delete[] m_data;
+        m_data = new_data;
+        m_capacity = size;
     }
 
     std::size_t size() const {
