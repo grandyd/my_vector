@@ -178,10 +178,9 @@ public:
     }
     ////////////////////////////////////////////////////////////////////
     vector(vector&& other_vec) : m_capacity(other_vec.m_capacity),
-        m_size(other_vec.m_size)
+        m_size(other_vec.m_size),
+        m_data(other_vec.m_data)
     {
-        m_data = other_vec.m_data;
-
         other_vec.m_data = nullptr;
         other_vec.m_size = 0;
         other_vec.m_capacity = 0;
@@ -207,11 +206,6 @@ public:
         push_back(value);
         value = T();
     }
-
-
-
-
-
 
 
 private:
