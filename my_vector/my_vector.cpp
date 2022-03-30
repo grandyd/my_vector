@@ -82,13 +82,7 @@ public:
 
     void clear() // homework
     {
-        m_size = m_capacity = 0;
-        delete[] m_data;
-        m_data = nullptr;
-
-        /*
-        m_size=0-правильный вариант        
-        */
+        m_size = 0;
     }
 
     void push_back(const T& value) {
@@ -188,23 +182,39 @@ public:
     
     vector& operator=(vector&& other_vec)
     {
-        delete[] m_data;
+        if (this != &other_vec)
+        {
+            clear();
+            delete[] m_data;
 
-        m_size = other_vec.m_size;
-        m_capacity = other_vec.m_capacity;
-        m_data = other_vec.m_data;
+            m_size = other_vec.m_size;
+            m_capacity = other_vec.m_capacity;
+            m_data = other_vec.m_data;
 
-        other_vec.m_data = nullptr;
-        other_vec.m_size = 0;
-        other_vec.m_capacity = 0;
+            other_vec.m_data = nullptr;
+            other_vec.m_size = 0;
+            other_vec.m_capacity = 0;
+        }
 
         return *this;
     }
 
     void push_back(T&& value)
     {
-        push_back(value);
-        value = T();
+        if (m_size == m_capacity) {
+            m_capacity = m_capacity == 0 ? 1 : 2 * m_capacity;
+
+            T* new_data = new T[m_capacity];
+            for (std::size_t i = 0; i < m_size; ++i) {
+                new_data[i] = std::move(m_data[i]);
+            }
+
+            delete[] m_data;
+            m_data = new_data;
+        }
+
+        m_data[m_size++] = std::move(value);
+        //занулять value не нужно т.к. move assignment уже занулит value
     }
 
 
@@ -230,4 +240,5 @@ int main()
     {
        std::cout << b[i] << " ";
     }
+
 }
