@@ -28,6 +28,7 @@ public:
             m_data[i] = value;
         }
     }
+
         vector(std::initializer_list<T> list): m_capacity(list.size()),
         m_size(list.size()),
         m_data(list.size()== 0 ? nullptr : new T[list.size()])// homework
@@ -46,20 +47,23 @@ public:
 
     vector& operator=(const vector& other) // homework
     {
-        delete[] m_data;
-        m_size = other.m_size;
-        m_capacity = other.m_capacity;
+        if (this != &other)
+        {
+            delete[] m_data;
+            m_size = other.m_size;
+            m_capacity = other.m_capacity;
 
-        if (other.m_data==nullptr)
-        {
-            m_data = nullptr;
-        }
-        else
-        {
-            m_data = new T[other.m_capacity];
-            for (std::size_t i = 0; i < other.m_size; i++)
+            if (other.m_data == nullptr)
             {
-                m_data[i] = other.m_data[i];
+                m_data = nullptr;
+            }
+            else
+            {
+                m_data = new T[other.m_capacity];
+                for (std::size_t i = 0; i < other.m_size; i++)
+                {
+                    m_data[i] = other.m_data[i];
+                }
             }
         }
 
@@ -81,6 +85,10 @@ public:
         m_size = m_capacity = 0;
         delete[] m_data;
         m_data = nullptr;
+
+        /*
+        m_size=0-правильный вариант        
+        */
     }
 
     void push_back(const T& value) {
@@ -122,7 +130,7 @@ public:
         m_size = size;
     }
 
-    void reserve(std::size_t size) // homework
+    void reserve(std::size_t size) // homework память не нужно сжимать
     {
         if (size==0)
         {
@@ -168,6 +176,43 @@ public:
     std::size_t size() const {
         return m_size;
     }
+    ////////////////////////////////////////////////////////////////////
+    vector(vector&& other_vec) : m_capacity(other_vec.m_capacity),
+        m_size(other_vec.m_size)
+    {
+        m_data = other_vec.m_data;
+
+        other_vec.m_data = nullptr;
+        other_vec.m_size = 0;
+        other_vec.m_capacity = 0;
+    }
+    
+    vector& operator=(vector&& other_vec)
+    {
+        delete[] m_data;
+
+        m_size = other_vec.m_size;
+        m_capacity = other_vec.m_capacity;
+        m_data = other_vec.m_data;
+
+        other_vec.m_data = nullptr;
+        other_vec.m_size = 0;
+        other_vec.m_capacity = 0;
+
+        return *this;
+    }
+
+    void push_back(T&& value)
+    {
+        push_back(value);
+        value = T();
+    }
+
+
+
+
+
+
 
 private:
     std::size_t m_capacity;
@@ -178,7 +223,17 @@ private:
 
 int main()
 {
-    vector<int> a;
-    vector<int> b;
-    b = a;
+    vector<int> a{ 1,3,2 };
+    vector<int> b(std::move(a));
+    for (std::size_t i = 0; i < b.size(); i++)
+    {
+        std::cout << b[i] << " ";
+    }
+    std::cout << std::endl;
+    b = vector<int>{ 1,12 };
+    b.push_back(std::move(2));
+    for (std::size_t i = 0; i < b.size(); i++)
+    {
+       std::cout << b[i] << " ";
+    }
 }
